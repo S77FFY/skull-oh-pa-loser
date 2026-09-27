@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="app-repo" content="skull-oh-pa-loser">
-<meta name="app-version" content="1.0.2">
+<meta name="app-version" content="1.0.3">
 <meta name="theme-color" content="#0b0406">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -161,7 +161,7 @@ h2{margin:4px 0 8px;font-size:30px;color:var(--gold);text-shadow:0 3px 0 #6a1d00
 <script>
 (()=>{
 'use strict';
-const VERSION='1.0.2';
+const VERSION='1.0.3';
 const $=id=>document.getElementById(id);
 const cv=$('c'), ctx=cv.getContext('2d');
 let W=0,H=0,DPR=1,safeT=0,safeB=0;
@@ -541,7 +541,7 @@ function sfx(name,arg){
 let esVoice=null;
 function pickVoice(){if(!('speechSynthesis' in window))return;const v=speechSynthesis.getVoices();esVoice=v.find(x=>/es[-_]MX/i.test(x.lang))||v.find(x=>/es[-_](US|419)/i.test(x.lang))||v.find(x=>/^es/i.test(x.lang))||(LANG==='en'?v.find(x=>/en[-_]US/i.test(x.lang)):null)||null}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
-function say(txt,rate=1.35,pitch=1.12){if(muted||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);if(esVoice){u.voice=esVoice;u.lang=esVoice.lang}else u.lang=LANG==='es'?'es-MX':'en-US';u.rate=rate;u.pitch=pitch;u.volume=1;speechSynthesis.speak(u)}catch(e){}}
+function say(txt,rate=1,pitch=1.1){if(muted||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);if(esVoice){u.voice=esVoice;u.lang=esVoice.lang}else u.lang=LANG==='es'?'es-MX':'en-US';u.rate=rate;u.pitch=pitch;u.volume=1;speechSynthesis.speak(u)}catch(e){}}
 
 /* ---------------- game state ---------------- */
 const BASE_C=7,BASE_R=8,MAX_C=9,MAX_R=10,NEED=4;
@@ -673,7 +673,7 @@ async function doClear(clear,cascade){
   }
   if(pts){addScore(pts);floatText(sx/n,sy/n,'+'+fmt(pts),mult()>1?'#ff9ad0':'#fff',20+Math.min(14,cascade*3))}
   sfx('match',cascade);
-  if(cascade>=2){const cws=S('combo');const w=cws[Math.min(cascade,cws.length-1)];if(cascade>=3)say(w,1.6,1.2);floatText(W/2,L.by+L.cs*ROWS*.35,w,'#ffd000',30+Math.min(20,cascade*4));punch(.02*cascade);shake(2*cascade)}
+  if(cascade>=2){const cws=S('combo');const w=cws[Math.min(cascade,cws.length-1)];if(cascade>=3)say(w,1,1.15);floatText(W/2,L.by+L.cs*ROWS*.35,w,'#ffd000',30+Math.min(20,cascade*4));punch(.02*cascade);shake(2*cascade)}
   await sleep(210);
 }
 async function applyMatch(res,cascade){
@@ -868,7 +868,7 @@ function lottery(){
       current=calls[i];
       const card=$('lCard');card.classList.remove('flip');void card.offsetWidth;card.classList.add('flip');
       $('lImg').src=spriteURL[current];$('lNm').textContent=lname(current);$('lNum').textContent=numOf(current);$('lName').textContent=callName(current);$('lCount').textContent=S('card',{i:i+1,n:calls.length});
-      say(callName(current)+'!',Math.min(1.9,1.5+i*.025),1.2);
+      say(callName(current)+'!',1,1.15);
       const dur=Math.max(950,1900-i*50),tm=$('lTimer');tm.style.transition='none';tm.style.width='100%';void tm.offsetWidth;tm.style.transition=`width ${dur}ms linear`;tm.style.width='0%';
       await Promise.race([sleep(dur),new Promise(r=>resolveMark=r)]);
       resolveMark=null;
@@ -883,7 +883,7 @@ function lottery(){
     if(marked.size===16){prize=PZ[4];pv=1}else if(nl>=5){prize=PZ[3];pv=.6}else if(nl>=3){prize=PZ[2];pv=.4}else if(nl===2){prize=PZ[1];pv=.2}else if(nl===1){prize=PZ[0];pv=.1}
     pv=Math.round(pv*target/10)*10;const total=coins+pv;
     $('lMsg').textContent=marked.size===16?S('full'):'';
-    if(marked.size===16){say(S('sayFull'),1.4,1.25);confetti(100)}
+    if(marked.size===16){say(S('sayFull'),1,1.2);confetti(100)}
     await sleep(900);
     $('rPrize').textContent=prize;$('rMarks').textContent=S('marks',{m:marked.size,c:fmt(coins)});
     $('rLines').textContent=nl?S('lines',{n:nl,p:prize,v:fmt(pv)}):S('noLines');
