@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="app-repo" content="skull-oh-pa-loser">
-<meta name="app-version" content="1.1.15">
+<meta name="app-version" content="1.1.17">
 <meta name="theme-color" content="#0b0406">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -228,7 +228,7 @@ html.mapOpen,html.mapOpen body{touch-action:pan-y}
 <script>
 (()=>{
 'use strict';
-const VERSION='1.1.15';
+const VERSION='1.1.17';
 const $=id=>document.getElementById(id);
 const cv=$('c'), ctx=cv.getContext('2d');
 let W=0,H=0,DPR=1,safeT=0,safeB=0;
@@ -371,10 +371,23 @@ function drawWild(g){
   g.restore();
 }
 function drawFlower(g){
-  g.save();g.fillStyle=rg(g,50,50,34,50,['rgba(255,50,30,.95)','rgba(230,10,20,.55)','rgba(140,0,0,0)']);g.fillRect(0,0,100,100);g.translate(50,50);shadowOn(g,14,0,'rgba(255,20,10,1)');g.beginPath();g.arc(0,0,40,0,7);g.fillStyle='#a52f00';g.fill();g.fill();shadowOff(g);
-  const rings=[[40,16,'#d02a10','#6a0800'],[32,14,'#e85008','#8a2000'],[25,12,'#ff8c14','#b84c00'],[18,10,'#ffab30','#d06400'],[11,8,'#ffc84a','#e08200']];
-  rings.forEach(([r,n,col,edge],i)=>{for(let k=0;k<n;k++){g.save();g.rotate(k/n*Math.PI*2+i*.45);g.beginPath();g.ellipse(r*.56,0,r*.46,Math.max(3.5,r*.27),0,0,7);g.fillStyle=col;g.fill();g.lineWidth=1.1;g.strokeStyle=edge;g.stroke();g.restore()}});
-  g.beginPath();g.arc(0,0,5,0,7);g.fillStyle='#ffe07a';g.fill();g.restore();
+  // cempasúchil: a ruffled pom-pom of frilly orange petals on two leaves
+  const J=k=>Math.sin(k*12.9898)*.5;
+  g.save();
+  g.fillStyle=rg(g,50,50,14,46,['rgba(220,30,20,.45)','rgba(160,10,10,.18)','rgba(80,0,0,0)']);g.fillRect(0,0,100,100);
+  // leaves
+  const leaf=(x,y,a,l)=>{g.save();g.translate(x,y);g.rotate(a);g.beginPath();g.moveTo(0,0);g.quadraticCurveTo(l*.5,-l*.32,l,0);g.quadraticCurveTo(l*.5,l*.32,0,0);g.fillStyle=lg(g,0,0,l,0,['#1e5a14','#3f8a26','#5aa838']);g.fill();g.strokeStyle='rgba(20,50,10,.7)';g.lineWidth=.8;g.beginPath();g.moveTo(1,0);g.lineTo(l*.85,0);g.stroke();g.restore()};
+  const petal=(x,y,a,len,wid,c0,c1,edge)=>{g.save();g.translate(x,y);g.rotate(a);g.beginPath();g.moveTo(0,-wid*.25);
+    const n=5;for(let i=0;i<=n;i++){const t=i/n,ang=(t-.5)*1.15,r=len*(i%2?.86:1);g.lineTo(Math.cos(ang)*r,Math.sin(ang)*r*wid/len*1.6)}
+    g.lineTo(0,wid*.25);g.closePath();g.fillStyle=lg(g,0,0,len,0,[c0,c1]);g.fill();g.lineWidth=.7;g.strokeStyle=edge;g.stroke();g.restore()};
+  g.translate(50,50);shadowOn(g,6,3,'rgba(0,0,0,.55)');g.beginPath();g.arc(0,0,27,0,7);g.fillStyle='#8a2400';g.fill();shadowOff(g);
+  const rings=[[22,18,13,9,'#a82a04','#e2560e','#5a1200'],[17,16,12,9,'#c63c06','#f47414','#6a1800'],[12,14,11,8.5,'#de5208','#ff8e1e','#7a2200'],[7,11,9,7.5,'#ee6a0e','#ffa62c','#8a2c00'],[2.5,7,7,6,'#f47a12','#ffb43a','#8a3000']];
+  rings.forEach(([d,n,len,wid,c0,c1,edge],ri)=>{for(let k=0;k<n;k++){const a=k/n*Math.PI*2+ri*.37+J(k+ri*20)*.25,dd=d+J(k*3+ri)*1.6;petal(Math.cos(a)*dd,Math.sin(a)*dd*.94,a+J(k+ri*7)*.35,len*(1+J(k*5+ri)*.15),wid,c0,c1,edge)}});
+  // deep folds in the centre
+  g.fillStyle='rgba(90,20,0,.55)';for(let k=0;k<6;k++){const a=k/6*Math.PI*2+.3;g.beginPath();g.ellipse(Math.cos(a)*3.5,Math.sin(a)*3.5,2.4,.9,a,0,7);g.fill()}
+  // soft top light
+  g.fillStyle=rg(g,-8,-10,1,24,['rgba(255,230,170,.32)','rgba(255,230,170,0)']);g.fillRect(-30,-30,60,60);
+  g.restore();
 }
 function drawPumpkin(g){
   g.save();
